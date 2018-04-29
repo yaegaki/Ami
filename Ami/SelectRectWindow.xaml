@@ -1,0 +1,18 @@
+﻿<Window x:Class="Ami.SelectRectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="" Height="300" Width="300" AllowsTransparency="True" WindowStyle="None" Background="Transparent" PreviewKeyDown="Window_PreviewKeyDown">
+    <Canvas x:Name="canvas" Background="Transparent">
+        <Image x:Name="image" 
+               Width="{Binding ActualWidth, ElementName=canvas}" Height="{Binding ActualHeight, ElementName=canvas}"
+               Source="{Binding Image}"/>
+        <Grid x:Name="grid"
+              Width="{Binding ActualWidth, ElementName=canvas}" Height="{Binding ActualHeight, ElementName=canvas}"
+              Background="White"
+              Opacity="0.6"
+              PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp"/>
+    </Canvas>
+</Window>

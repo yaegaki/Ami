@@ -1,0 +1,36 @@
+﻿<Window x:Class="Ami.TweetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ami"
+        mc:Ignorable="d"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Title="TweetWindow" Height="400" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ListView x:Name="listview" Grid.Row="0" ScrollViewer.CanContentScroll="False">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding}" MaxWidth="300" MaxHeight="300"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock x:Name="textblock"/>
+            <TextBlock>この内容でツイートしますか</TextBlock>
+            <Button Click="Button_Click" Margin="3">OK(Enter)</Button>
+            <Button Click="Button_Click_1" Margin="3">Cancel(Esc)</Button>
+        </StackPanel>
+    </Grid>
+</Window>

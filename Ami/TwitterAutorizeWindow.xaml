@@ -1,0 +1,30 @@
+﻿<Window x:Class="Ami.TwitterAutorizeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ami"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        mc:Ignorable="d"
+        Title="TwitterAutorizeWindow" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock>Pinコードを入力してください</TextBlock>
+        <TextBox x:Name="pin" Grid.Row="1"></TextBox>
+        <StackPanel Grid.Row="2">
+            <Button Content="OK" Click="OKClick" Margin="3"/>
+            <Button Content="Cancel" Click="CancelClick" Margin="3"/>
+        </StackPanel>
+    </Grid>
+</Window>
