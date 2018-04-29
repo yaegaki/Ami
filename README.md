@@ -1,6 +1,8 @@
 # Ami
 定位置スクリーンショットツイートツール
 
+![アプリスクリーンショット](https://raw.githubusercontent.com/wiki/yaegaki/Ami/images/ami.png)
+
 ## ダウンロード
 
 [リリース](https://github.com/yaegaki/Ami/releases)から最新のバージョンをダウンロードしてください。
