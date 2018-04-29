@@ -21,7 +21,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <TextBox Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="いまどうしてる？"/>
+            <TextBox x:Name="tweetTextBox" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="いまどうしてる？"/>
+            <TextBox Text="{Binding HashTag, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="ハッシュタグ" Margin="0,2,0,0"/>
 
             <Grid>
                 <Grid.RowDefinitions>

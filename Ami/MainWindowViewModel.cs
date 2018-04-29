@@ -58,6 +58,22 @@ namespace Ami
             }
         }
 
+        private string hashTag;
+        public string HashTag
+        {
+            get => hashTag;
+            set
+            {
+                if (hashTag == value)
+                {
+                    return;
+                }
+
+                hashTag = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HashTag)));
+            }
+        }
+
         private int maxImageCount = 300;
         /// <summary>
         /// イメージをためておく最大数
@@ -212,7 +228,24 @@ namespace Ami
                 tweetImages = this.SelectedImages.ToArray();
             }
 
-            var window = new TweetWindow(token, this.Text, tweetImages);
+            string tweetText;
+            if (string.IsNullOrWhiteSpace(this.HashTag))
+            {
+                tweetText = this.Text;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(this.Text))
+                {
+                    tweetText = this.HashTag.Trim();
+                }
+                else
+                {
+                    tweetText = this.Text.Trim() + "\n" + this.HashTag.Trim();
+                }
+            }
+
+            var window = new TweetWindow(token, tweetText, tweetImages);
             window.Owner = Application.Current.MainWindow;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             var res = window.ShowDialog();
@@ -221,7 +254,11 @@ namespace Ami
             if (res != null && res.Value)
             {
                 this.Text = string.Empty;
+                // ハッシュタグは消さない
+                return;
             }
+
+            return;
         }
 
         /// <summary>

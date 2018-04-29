@@ -30,7 +30,7 @@ namespace Ami
 
         private void TweetClick(object sender, RoutedEventArgs e)
         {
-            this.viewModel.Tweet();
+            Tweet();
         }
 
         private void TwitterAuthorizeClick(object sender, RoutedEventArgs e)
@@ -55,7 +55,7 @@ namespace Ami
                 else if (e.Key == Key.Enter)
                 {
                     e.Handled = true;
-                    this.viewModel.Tweet();
+                    Tweet();
                 }
             }
 
@@ -68,6 +68,13 @@ namespace Ami
             {
                 this.viewModel.SelectedImages.Add(image);
             }
+        }
+
+        private void Tweet()
+        {
+            this.viewModel.Tweet();
+            // ツイートが終わったらテキストボックスにフォーカスする
+            this.tweetTextBox.Focus();
         }
     }
 }
