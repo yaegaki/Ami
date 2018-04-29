@@ -56,20 +56,33 @@ namespace Ami
         {
             try
             {
-                var media = this.images.Select(image =>
+                Cursor oldCursor = null;
+                try
                 {
-                    var encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(image));
-                    using (var ms = new System.IO.MemoryStream())
+                    oldCursor = Mouse.OverrideCursor;
+                    Mouse.OverrideCursor = Cursors.Wait;
+
+
+                    var media = this.images.Select(image =>
                     {
-                        encoder.Save(ms);
-                        ms.Seek(0, System.IO.SeekOrigin.Begin);
+                        var encoder = new PngBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(image));
+                        using (var ms = new System.IO.MemoryStream())
+                        {
+                            encoder.Save(ms);
+                            ms.Seek(0, System.IO.SeekOrigin.Begin);
 
-                        return tokens.Media.Upload(media: ms).MediaId;
-                    }
-                });
+                            return tokens.Media.Upload(media: ms).MediaId;
+                        }
+                    });
 
-                tokens.Statuses.Update(status: this.text, media_ids: media);
+                    tokens.Statuses.Update(status: this.text, media_ids: media);
+
+                }
+                finally
+                {
+                    Mouse.OverrideCursor = oldCursor;
+                }
 
                 // Tweet終わったら閉じる
                 this.DialogResult = true;
