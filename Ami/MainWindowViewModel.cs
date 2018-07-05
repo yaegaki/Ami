@@ -39,7 +39,7 @@ namespace Ami
             }
         }
 
-        private string text;
+        private string text = string.Empty;
         /// <summary>
         /// Tweetするテキスト
         /// </summary>
