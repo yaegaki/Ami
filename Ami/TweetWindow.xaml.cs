@@ -20,7 +20,7 @@ namespace Ami
             InitializeComponent();
 
             this.textblock.Text = text;
-            this.listview.ItemsSource = images;
+            this.itemsControl.ItemsSource = images;
 
             this.tokens = tokens;
             this.text = text;

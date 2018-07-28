@@ -13,18 +13,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView x:Name="listview" Grid.Row="0" ScrollViewer.CanContentScroll="False">
-            <ListView.ItemsPanel>
+        <ItemsControl x:Name="itemsControl" Grid.Row="0" ScrollViewer.CanContentScroll="False">
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
+                    <UniformGrid/>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Image Source="{Binding}" MaxWidth="300" MaxHeight="300"/>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <StackPanel Grid.Row="1">
             <TextBlock x:Name="textblock"/>
