@@ -216,5 +216,20 @@ namespace Ami
         }
 
         #endregion
+
+        private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.viewModel.LastSelectedItem != null;
+        }
+
+        private void Copy_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.viewModel.LastSelectedItem == null)
+            {
+                return;
+            }
+
+            Clipboard.SetImage(this.viewModel.LastSelectedItem.Image);
+        }
     }
 }

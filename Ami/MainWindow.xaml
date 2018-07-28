@@ -58,6 +58,9 @@
                           PreviewMouseLeftButtonDown="listview_PreviewMouseLeftButtonDown"
                           PreviewMouseLeftButtonUp="listview_PreviewMouseLeftButtonUp"
                           PreviewMouseMove="listview_PreviewMouseMove">
+                    <ListView.CommandBindings>
+                        <CommandBinding Command="Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
+                    </ListView.CommandBindings>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Width="{Binding ViewportWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}"/>
