@@ -74,7 +74,7 @@ namespace Ami
             }
         }
 
-        private int maxImageCount = 300;
+        private int maxImageCount = 600;
         /// <summary>
         /// イメージをためておく最大数
         /// </summary>
