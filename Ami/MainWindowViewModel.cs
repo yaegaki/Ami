@@ -14,17 +14,17 @@ namespace Ami
         /// <summary>
         /// キャプチャしたイメージ
         /// </summary>
-        public ObservableCollection<BitmapSource> Images { get; } = new ObservableCollection<BitmapSource>();
+        public ObservableCollection<ImageViewModel> Images { get; } = new ObservableCollection<ImageViewModel>();
         /// <summary>
         /// 現在選択中のイメージ
         /// </summary>
-        public ObservableCollection<BitmapSource> SelectedImages { get; } = new ObservableCollection<BitmapSource>();
+        public ObservableCollection<ImageViewModel> SelectedImages { get; } = new ObservableCollection<ImageViewModel>();
 
         /// <summary>
         /// 最後に選択したイメージ
         /// </summary>
-        private BitmapSource lastSelectedItem;
-        public BitmapSource LastSelectedItem
+        private ImageViewModel lastSelectedItem;
+        public ImageViewModel LastSelectedItem
         {
             get => lastSelectedItem;
             set
@@ -150,8 +150,31 @@ namespace Ami
         /// </summary>
         public void Capture()
         {
-            var image = CaptureDesktop(this.captureRect);
+            BitmapSource image;
+            try
+            {
+                image = CaptureDesktop(this.captureRect);
+            }
+            catch (OutOfMemoryException)
+            {
+                // 応急処置
+                MessageBox.Show("メモリを確保できませんでした。動作が不安定になる可能性があります。");
+                return;
+            }
+
             AddImage(image);
+        }
+
+        /// <summary>
+        /// イメージを削除する
+        /// ついでにGCも行う
+        /// </summary>
+        public void ClearImages()
+        {
+            this.Images.Clear();
+            this.SelectedImages.Clear();
+            this.LastSelectedItem = null;
+            GC.Collect();
         }
 
         public void TwitterAuthorize()
@@ -221,11 +244,11 @@ namespace Ami
                     return;
                 }
 
-                tweetImages = new[] { this.Images.First() };
+                tweetImages = new[] { this.Images.First().Image };
             }
             else
             {
-                tweetImages = this.SelectedImages.ToArray();
+                tweetImages = this.SelectedImages.Select(i => i.Image).ToArray();
             }
 
             string tweetText;
@@ -266,13 +289,14 @@ namespace Ami
         /// </summary>
         private void AddImage(BitmapSource image)
         {
-            this.Images.Insert(0, image);
+            var imageVM = new ImageViewModel(image, DateTime.Now);
+            this.Images.Insert(0, imageVM);
             CollectImages();
 
             // 追加したものを選択画像にする
             this.SelectedImages.Clear();
-            this.SelectedImages.Add(image);
-            this.LastSelectedItem = image;
+            this.SelectedImages.Add(imageVM);
+            this.LastSelectedItem = imageVM;
         }
 
         /// <summary>

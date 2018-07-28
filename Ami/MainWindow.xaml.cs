@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Ami
@@ -43,6 +45,11 @@ namespace Ami
             this.viewModel.SelectRect();
         }
 
+        private void ClearClick(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.ClearImages();
+        }
+
         private void grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -64,9 +71,9 @@ namespace Ami
         private void listview_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.viewModel.SelectedImages.Clear();
-            foreach (var image in this.listview.SelectedItems.OfType<BitmapSource>())
+            foreach (var imageVM in this.listview.SelectedItems.OfType<ImageViewModel>())
             {
-                this.viewModel.SelectedImages.Add(image);
+                this.viewModel.SelectedImages.Add(imageVM);
             }
         }
 
@@ -76,5 +83,138 @@ namespace Ami
             // ツイートが終わったらテキストボックスにフォーカスする
             this.tweetTextBox.Focus();
         }
+
+        #region DragDrop
+
+        enum DragDropState
+        {
+            None,
+            MouseDown,
+        }
+
+        private DragDropState dragState;
+        private Point dragStartPoint;
+
+        private void listview_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var fwe = e.OriginalSource as FrameworkElement;
+            if (fwe == null)
+            {
+                return;
+            }
+
+            if (!(fwe.DataContext is ImageViewModel))
+            {
+                return;
+            }
+
+            this.dragState = DragDropState.MouseDown;
+            this.dragStartPoint = e.GetPosition(this);
+        }
+
+        private void listview_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Released)
+            {
+                return;
+            }
+
+            switch (this.dragState)
+            {
+                case DragDropState.MouseDown:
+                    if ((this.dragStartPoint - e.GetPosition(this)).Length < 5)
+                    {
+                        return;
+                    }
+
+                    StartDrag();
+                    break;
+
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void StartDrag()
+        {
+            var tempFiles = new System.Collections.Specialized.StringCollection();
+            try
+            {
+                var tempDir = System.IO.Path.GetTempPath();
+                foreach (var imageVM in this.viewModel.SelectedImages)
+                {
+                    string tempPath = string.Empty;
+                    var found = false;
+                    var name = imageVM.DateTime.ToString("yyyy_MM_dd_hh_mm_ss");
+                    for (var i = 0; i < 100; i++)
+                    {
+                        if (i > 0)
+                        {
+                            tempPath = tempDir + name + $"({i + 1})" + ".png";
+                        }
+                        else
+                        {
+                            tempPath = tempDir + name + ".png";
+                        }
+
+                        if (!System.IO.File.Exists(tempPath))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        this.dragState = DragDropState.None;
+                        return;
+                    }
+
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(imageVM.Image));
+
+                    using (var file = System.IO.File.OpenWrite(tempPath))
+                    {
+                        encoder.Save(file);
+                    }
+                    tempFiles.Add(tempPath);
+                }
+
+                var data = new DataObject();
+                data.SetFileDropList(tempFiles);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy);
+            }
+            catch
+            {
+                this.dragState = DragDropState.None; ;
+                return;
+            }
+            finally
+            {
+                foreach (var tempFile in tempFiles)
+                {
+                    try
+                    {
+                        if (System.IO.File.Exists(tempFile))
+                        {
+                            System.IO.File.Delete(tempFile);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
+
+        private void listview_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            this.dragState = DragDropState.None;
+        }
+
+        #endregion
     }
 }

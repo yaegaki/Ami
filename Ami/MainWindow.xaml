@@ -48,23 +48,35 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <ListView Grid.Column="0" x:Name="listview" ItemsSource="{Binding Images}" SelectedItem="{Binding LastSelectedItem}" SelectionChanged="listview_SelectionChanged" ScrollViewer.CanContentScroll="False">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Width="{Binding ViewportWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}"/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Image Source="{Binding}"></Image>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ListView Grid.Row="0" x:Name="listview" ItemsSource="{Binding Images}" SelectedItem="{Binding LastSelectedItem}" SelectionChanged="listview_SelectionChanged" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          PreviewMouseLeftButtonDown="listview_PreviewMouseLeftButtonDown"
+                          PreviewMouseLeftButtonUp="listview_PreviewMouseLeftButtonUp"
+                          PreviewMouseMove="listview_PreviewMouseMove">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Width="{Binding ViewportWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Image}"></Image>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button Grid.Row="1" Content="Clear" Margin="3" Click="ClearClick"/>
+            </Grid>
 
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
 
             <Grid Grid.Column="2">
-                <Image Source="{Binding LastSelectedItem}"/>
+                <Image Source="{Binding LastSelectedItem.Image}"/>
             </Grid>
         </Grid>
     </Grid>
