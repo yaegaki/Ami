@@ -129,10 +129,6 @@ namespace Ami
 
                     StartDrag();
                     break;
-
-                    break;
-                case 2:
-                    break;
                 default:
                     break;
             }
