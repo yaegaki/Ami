@@ -252,19 +252,47 @@ namespace Ami
             }
 
             string tweetText;
-            if (string.IsNullOrWhiteSpace(this.HashTag))
+            var hashTags = new List<string>();
+            if (!string.IsNullOrWhiteSpace(this.HashTag))
+            {
+                foreach (var t in this.HashTag.Split(' '))
+                {
+                    var tag = t.Trim();
+                    if (tag.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    // #で始まってない場合はつける
+                    if (tag[0] != '#')
+                    {
+                        tag = '#' + tag;
+                    }
+                    else if (tag.Length == 1)
+                    {
+                        // #しかないやつは無視
+                        continue;
+                    }
+
+                    hashTags.Add(tag);
+                }
+            }
+
+            if (hashTag.Length == 0)
             {
                 tweetText = this.Text;
             }
             else
             {
+                var hashTagStr = string.Join(" ", hashTags);
+
                 if (string.IsNullOrWhiteSpace(this.Text))
                 {
-                    tweetText = this.HashTag.Trim();
+                    tweetText = hashTagStr;
                 }
                 else
                 {
-                    tweetText = this.Text.Trim() + "\n" + this.HashTag.Trim();
+                    tweetText = this.Text.Trim() + "\n" + hashTagStr;
                 }
             }
 
