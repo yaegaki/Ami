@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
@@ -207,7 +209,7 @@ namespace Ami
             this.settingService.Save();
         }
 
-        public void Tweet()
+        public async Task TweetAsync()
         {
             if (string.IsNullOrEmpty(this.settingService.AccessToken) || string.IsNullOrEmpty(this.settingService.AccessTokenSecret))
             {
@@ -216,18 +218,27 @@ namespace Ami
             }
 
             CoreTweet.Tokens token;
+            var cursor = Mouse.OverrideCursor;
             try
             {
-                token = CoreTweet.Tokens.Create(SettingService.ConsumerKey,
-                    SettingService.ConsumerSecret,
-                    this.settingService.AccessToken,
-                    this.settingService.AccessTokenSecret);
+                Mouse.OverrideCursor = Cursors.Wait;
+                token = await Task.Run(() =>
+                {
+                    return CoreTweet.Tokens.Create(SettingService.ConsumerKey,
+                        SettingService.ConsumerSecret,
+                        this.settingService.AccessToken,
+                        this.settingService.AccessTokenSecret);
+                });
             }
             catch
             {
                 // OAuthやり直したほうがいいかもしれない
                 MessageBox.Show("Twitterアカウントでエラーが発生しました");
                 return;
+            }
+            finally
+            {
+                Mouse.OverrideCursor = cursor;
             }
 
             if (this.SelectedImages.Count > 4)
@@ -308,8 +319,6 @@ namespace Ami
                 // ハッシュタグは消さない
                 return;
             }
-
-            return;
         }
 
         /// <summary>

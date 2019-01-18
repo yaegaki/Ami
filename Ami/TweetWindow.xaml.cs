@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -14,6 +15,7 @@ namespace Ami
         private CoreTweet.Tokens tokens;
         private string text;
         private IReadOnlyList<BitmapSource> images;
+        private Task tweetTask;
 
         public TweetWindow(CoreTweet.Tokens tokens, string text, IReadOnlyList<BitmapSource> images)
         {
@@ -54,6 +56,16 @@ namespace Ami
 
         private void Tweet()
         {
+            if (this.tweetTask != null)
+            {
+                return;
+            }
+
+            this.tweetTask = TweetAsync().ContinueWith(_ => { });
+        }
+
+        private async Task TweetAsync()
+        {
             try
             {
                 Cursor oldCursor = null;
@@ -63,7 +75,8 @@ namespace Ami
                     Mouse.OverrideCursor = Cursors.Wait;
 
 
-                    var media = this.images.Select(image =>
+                    var media = new long[this.images.Count];
+                    foreach (var (image, i) in this.images.Select((img, i) => (img, i)))
                     {
                         var encoder = new PngBitmapEncoder();
                         encoder.Frames.Add(BitmapFrame.Create(image));
@@ -72,11 +85,11 @@ namespace Ami
                             encoder.Save(ms);
                             ms.Seek(0, System.IO.SeekOrigin.Begin);
 
-                            return tokens.Media.Upload(media: ms).MediaId;
+                            media[i] = (await tokens.Media.UploadAsync(media: ms)).MediaId;
                         }
-                    });
+                    }
 
-                    tokens.Statuses.Update(status: this.text, media_ids: media);
+                    await tokens.Statuses.UpdateAsync(status: this.text, media_ids: media);
 
                 }
                 finally
@@ -87,9 +100,9 @@ namespace Ami
                 // Tweet終わったら閉じる
                 this.DialogResult = true;
             }
-            catch
+            catch (System.Exception e)
             {
-                MessageBox.Show("失敗しました");
+                MessageBox.Show($"失敗しました:\n{e}");
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +16,7 @@ namespace Ami
     {
         private MainWindowViewModel viewModel;
         private SettingService settingService = new SettingService();
+        private Task tweetTask; 
 
         public MainWindow()
         {
@@ -79,9 +81,31 @@ namespace Ami
 
         private void Tweet()
         {
-            this.viewModel.Tweet();
-            // ツイートが終わったらテキストボックスにフォーカスする
-            this.tweetTextBox.Focus();
+            // 結果は無視
+            TweetAsync().ContinueWith(_ => { });
+        }
+
+        private async Task TweetAsync()
+        {
+            if (this.tweetTask != null)
+            {
+                return;
+            }
+
+            try
+            {
+                this.tweetTask = this.viewModel.TweetAsync();
+                await this.tweetTask;
+                // ツイートが終わったらテキストボックスにフォーカスする
+                this.tweetTextBox.Focus();
+            }
+            catch
+            {
+            }
+            finally
+            {
+                this.tweetTask = null;
+            }
         }
 
         #region DragDrop
