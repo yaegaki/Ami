@@ -50,7 +50,7 @@ namespace Ami
 
         private void DeselectClick(object sender, RoutedEventArgs e)
         {
-            this.viewModel.SelectedImages.Clear();
+            this.viewModel.Deselect();
         }
 
         private void ClearClick(object sender, RoutedEventArgs e)

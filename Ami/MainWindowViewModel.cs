@@ -209,6 +209,15 @@ namespace Ami
             this.settingService.Save();
         }
 
+        /// <summary>
+        /// 選択を解除する
+        /// </summary>
+        public void Deselect()
+        {
+            this.SelectedImages.Clear();
+            this.LastSelectedItem = null;
+        }
+
         public async Task TweetAsync()
         {
             if (string.IsNullOrEmpty(this.settingService.AccessToken) || string.IsNullOrEmpty(this.settingService.AccessTokenSecret))
