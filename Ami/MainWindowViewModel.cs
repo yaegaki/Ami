@@ -90,6 +90,24 @@ namespace Ami
             }
         }
 
+        private bool textOnlyTweetEnabled;
+        public bool TextOnlyTweetEnabled
+        {
+            get => textOnlyTweetEnabled;
+            set
+            {
+                if (textOnlyTweetEnabled == value)
+                {
+                    return;
+                }
+
+                textOnlyTweetEnabled = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TextOnlyTweetEnabled)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TweetButtonText)));
+            }
+        }
+        public string TweetButtonText => TextOnlyTweetEnabled ? "Tweet Text(Ctrl+Shift+Enter)" : "Tweet(Ctrl+Enter)";
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -259,7 +277,7 @@ namespace Ami
 
             var tweetText = GetTweetText();
             IReadOnlyList<BitmapSource> tweetImages;
-            if (this.SelectedImages.Count == 0)
+            if (this.SelectedImages.Count == 0 || this.TextOnlyTweetEnabled)
             {
                 tweetImages = Array.Empty<BitmapSource>();
             }

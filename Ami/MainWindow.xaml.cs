@@ -74,6 +74,12 @@ namespace Ami
                 }
             }
 
+            UpdateTextOnlyTweetEnabled();
+        }
+
+        private void grid_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            UpdateTextOnlyTweetEnabled();
         }
 
         private void listview_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -83,6 +89,11 @@ namespace Ami
             {
                 this.viewModel.SelectedImages.Add(imageVM);
             }
+        }
+
+        private void UpdateTextOnlyTweetEnabled()
+        {
+            this.viewModel.TextOnlyTweetEnabled = (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
         }
 
         private void Tweet()
@@ -100,6 +111,8 @@ namespace Ami
 
             try
             {
+                UpdateTextOnlyTweetEnabled();
+
                 this.tweetTask = this.viewModel.TweetAsync();
                 await this.tweetTask;
                 // ツイートが終わったらテキストボックスにフォーカスする
@@ -257,6 +270,11 @@ namespace Ami
             }
 
             Clipboard.SetImage(this.viewModel.LastSelectedItem.Image);
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            UpdateTextOnlyTweetEnabled();
         }
     }
 }
