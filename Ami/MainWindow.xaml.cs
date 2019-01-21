@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -99,8 +100,9 @@ namespace Ami
                 // ツイートが終わったらテキストボックスにフォーカスする
                 this.tweetTextBox.Focus();
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show($"失敗しました:\n{e}");
             }
             finally
             {
