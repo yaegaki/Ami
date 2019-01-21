@@ -289,7 +289,7 @@ namespace Ami
                 }
             }
 
-            if (hashTag.Length == 0)
+            if (hashTags.Count == 0)
             {
                 tweetText = this.Text;
             }
