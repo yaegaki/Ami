@@ -247,21 +247,48 @@ namespace Ami
                 return;
             }
 
+
+            var tweetText = GetTweetText();
             IReadOnlyList<BitmapSource> tweetImages;
             if (this.SelectedImages.Count == 0)
             {
                 if (this.Images.Count == 0)
                 {
-                    return;
+                    tweetImages = Array.Empty<BitmapSource>();
                 }
-
-                tweetImages = new[] { this.Images.First().Image };
+                else
+                {
+                    tweetImages = new[] { this.Images.First().Image };
+                }
             }
             else
             {
                 tweetImages = this.SelectedImages.Select(i => i.Image).ToArray();
             }
 
+            if (string.IsNullOrWhiteSpace(tweetText) && tweetImages.Count == 0)
+            {
+                MessageBox.Show("Tweetする内容がありません");
+                return;
+            }
+
+
+            var window = new TweetWindow(token, tweetText, tweetImages);
+            window.Owner = Application.Current.MainWindow;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var res = window.ShowDialog();
+
+            // tweetした場合のみテキストを消す
+            if (res != null && res.Value)
+            {
+                this.Text = string.Empty;
+                // ハッシュタグは消さない
+                return;
+            }
+        }
+
+        private string GetTweetText()
+        {
             string tweetText;
             var hashTags = new List<string>();
             if (!string.IsNullOrWhiteSpace(this.HashTag))
@@ -291,7 +318,7 @@ namespace Ami
 
             if (hashTags.Count == 0)
             {
-                tweetText = this.Text;
+                tweetText = this.Text.Trim();
             }
             else
             {
@@ -307,18 +334,7 @@ namespace Ami
                 }
             }
 
-            var window = new TweetWindow(token, tweetText, tweetImages);
-            window.Owner = Application.Current.MainWindow;
-            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            var res = window.ShowDialog();
-
-            // tweetした場合のみテキストを消す
-            if (res != null && res.Value)
-            {
-                this.Text = string.Empty;
-                // ハッシュタグは消さない
-                return;
-            }
+            return tweetText;
         }
 
         /// <summary>
