@@ -261,14 +261,7 @@ namespace Ami
             IReadOnlyList<BitmapSource> tweetImages;
             if (this.SelectedImages.Count == 0)
             {
-                if (this.Images.Count == 0)
-                {
-                    tweetImages = Array.Empty<BitmapSource>();
-                }
-                else
-                {
-                    tweetImages = new[] { this.Images.First().Image };
-                }
+                tweetImages = Array.Empty<BitmapSource>();
             }
             else
             {
