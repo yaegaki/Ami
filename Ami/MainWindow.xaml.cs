@@ -48,6 +48,11 @@ namespace Ami
             this.viewModel.SelectRect();
         }
 
+        private void DeselectClick(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.SelectedImages.Clear();
+        }
+
         private void ClearClick(object sender, RoutedEventArgs e)
         {
             this.viewModel.ClearImages();
